@@ -1,28 +1,506 @@
-<div class="education-card reveal">
+from pathlib import Path
 
-    <div class="education-icon">
-        🎓
-    </div>
+html = r'''<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Portfolio professionnel d'Angèle Sancho, apprentie assistante vétérinaire en formation au GIPSA de Montpellier.">
+  <title>Angèle Sancho | Portfolio ASV</title>
+  <style>
+    :root {
+      --green: #477c70;
+      --green-dark: #315d54;
+      --mint: #e4f0eb;
+      --mint-light: #f2f7f4;
+      --beige: #f4eee4;
+      --cream: #fbfaf7;
+      --ink: #263a35;
+      --muted: #6f7e78;
+      --white: #fff;
+      --shadow: 0 14px 38px rgba(48, 77, 68, .09);
+      --radius: 22px;
+    }
 
-    <div>
-        <h3>Formation ASV – GIPSA</h3>
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; scroll-padding-top: 90px; }
+    body {
+      margin: 0;
+      font-family: "Segoe UI", Arial, sans-serif;
+      color: var(--ink);
+      background: var(--cream);
+      line-height: 1.65;
+    }
+    a { color: inherit; }
+    img { max-width: 100%; display: block; }
+    .container { width: min(1100px, calc(100% - 40px)); margin: 0 auto; }
 
-        <p>
-            Formation d'Auxiliaire Spécialisée Vétérinaire (ASV)
-        </p>
+    header {
+      position: sticky; top: 0; z-index: 20;
+      background: rgba(251, 250, 247, .94);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(71, 124, 112, .12);
+    }
+    .nav {
+      min-height: 72px; display: flex; align-items: center;
+      justify-content: space-between; gap: 20px;
+    }
+    .brand {
+      font-weight: 800; letter-spacing: .04em; color: var(--green-dark);
+      text-decoration: none; white-space: nowrap;
+    }
+    .nav-links { display: flex; align-items: center; gap: 25px; }
+    .nav-links a {
+      text-decoration: none; font-size: .93rem; color: var(--muted);
+      font-weight: 600; transition: color .2s;
+    }
+    .nav-links a:hover { color: var(--green-dark); }
+    .menu-toggle {
+      display: none; border: 0; background: var(--mint); color: var(--green-dark);
+      border-radius: 12px; padding: 9px 12px; font-size: 1.2rem; cursor: pointer;
+    }
 
-        <p>
-            GIPSA de Montpellier
-        </p>
+    .hero {
+      padding: 82px 0 76px;
+      background:
+        radial-gradient(circle at 85% 15%, rgba(228,240,235,.95), transparent 28%),
+        linear-gradient(135deg, var(--cream), #f5f0e8);
+    }
+    .hero-grid {
+      display: grid; grid-template-columns: 1.25fr .75fr;
+      align-items: center; gap: 55px;
+    }
+    .eyebrow {
+      display: inline-block; padding: 7px 14px; border-radius: 99px;
+      background: var(--mint); color: var(--green-dark);
+      font-size: .82rem; font-weight: 800; letter-spacing: .06em;
+      text-transform: uppercase;
+    }
+    h1 {
+      font-size: clamp(2.5rem, 6vw, 4.7rem); line-height: 1.06;
+      margin: 20px 0 14px; letter-spacing: -.045em;
+    }
+    h1 span { color: var(--green); }
+    .hero p { color: var(--muted); font-size: 1.1rem; max-width: 610px; }
+    .hero-actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 28px; }
+    .btn {
+      display: inline-flex; align-items: center; justify-content: center;
+      padding: 12px 19px; border-radius: 999px; text-decoration: none;
+      font-weight: 700; transition: transform .2s, box-shadow .2s;
+    }
+    .btn:hover { transform: translateY(-2px); box-shadow: var(--shadow); }
+    .btn-primary { background: var(--green); color: var(--white); }
+    .btn-secondary { background: var(--white); color: var(--green-dark); border: 1px solid #dce8e2; }
+    .profile-wrap { display: flex; justify-content: center; }
+    .profile-frame {
+      width: min(330px, 100%); aspect-ratio: 4 / 5; padding: 12px;
+      background: var(--white); border-radius: 42% 42% 28px 28px;
+      box-shadow: var(--shadow); transform: rotate(2deg);
+    }
+    .profile-frame img {
+      width: 100%; height: 100%; object-fit: cover;
+      border-radius: 40% 40% 20px 20px; background: var(--mint);
+    }
 
-        <p>
-            Clinique d'urgence vétérinaire StadiumVet,
-            Villeneuve-lès-Béziers.
-        </p>
+    section { padding: 78px 0; }
+    section:nth-of-type(even) { background: var(--mint-light); }
+    .section-heading { margin-bottom: 34px; max-width: 720px; }
+    .section-kicker {
+      color: var(--green); text-transform: uppercase; font-size: .78rem;
+      font-weight: 800; letter-spacing: .12em;
+    }
+    h2 { font-size: clamp(1.9rem, 4vw, 2.65rem); line-height: 1.2; margin: 8px 0 12px; }
+    .section-heading p { color: var(--muted); margin: 0; }
+    .about-grid { display: grid; grid-template-columns: 1.1fr .9fr; gap: 25px; }
+    .panel, .skill-card, .experience-card, .education-card, .interest-card {
+      background: var(--white); border: 1px solid rgba(71,124,112,.1);
+      border-radius: var(--radius); box-shadow: var(--shadow);
+    }
+    .panel { padding: 28px; }
+    .panel p { margin-top: 0; color: var(--muted); }
+    .facts { display: grid; gap: 14px; }
+    .fact { padding: 15px 17px; border-radius: 16px; background: var(--mint-light); }
+    .fact strong { display: block; color: var(--green-dark); margin-bottom: 2px; }
 
-        <span class="education-year">
-            3 novembre 2025 – 2 novembre 2027
-        </span>
-    </div>
+    .skills-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
+    .skill-card { padding: 24px; }
+    .skill-icon {
+      width: 44px; height: 44px; display: grid; place-items: center;
+      background: var(--mint); border-radius: 14px; font-size: 1.35rem;
+      margin-bottom: 14px;
+    }
+    .skill-card h3, .experience-card h3, .education-card h3 { margin: 0 0 8px; }
+    .skill-card p { margin: 0; color: var(--muted); font-size: .95rem; }
 
-</div>
+    .qualities-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 22px; }
+    .quality-list { list-style: none; padding: 0; margin: 12px 0 0; }
+    .quality-list li { padding: 8px 0; border-bottom: 1px solid #edf1ee; }
+    .quality-list li:last-child { border: 0; }
+    .quality-list li::before { content: "✓"; color: var(--green); font-weight: 900; margin-right: 10px; }
+
+    .experience-list { display: grid; gap: 18px; }
+    .experience-card { padding: 25px 28px; display: grid; grid-template-columns: 54px 1fr; gap: 18px; }
+    .experience-icon {
+      width: 52px; height: 52px; border-radius: 16px;
+      background: var(--mint); display: grid; place-items: center; font-size: 1.4rem;
+    }
+    .experience-meta { color: var(--green); font-weight: 800; font-size: .85rem; }
+    .experience-card h3 { margin-top: 3px; }
+    .experience-context { color: var(--muted); margin: 0 0 9px; font-weight: 600; }
+    .experience-card p { margin: 0 0 8px; }
+    .experience-card ul { margin: 7px 0 0; padding-left: 20px; color: var(--muted); }
+
+    .education-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+    .education-card { padding: 26px; }
+    .education-date { color: var(--green); font-weight: 800; font-size: .86rem; }
+    .education-card p { color: var(--muted); margin: 7px 0 0; }
+    .education-card.featured { border: 2px solid #c9ded4; background: #fcfffd; }
+
+    .interests { display: grid; grid-template-columns: repeat(6, 1fr); gap: 12px; }
+    .interest-card {
+      padding: 18px 10px; text-align: center; box-shadow: none;
+      background: var(--white); font-weight: 700; font-size: .92rem;
+    }
+    .interest-card span { display: block; font-size: 1.5rem; margin-bottom: 5px; }
+
+    .contact-section { background: var(--beige) !important; }
+    .contact-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 25px; align-items: start; }
+    .contact-item { padding: 15px 0; border-bottom: 1px solid rgba(71,124,112,.16); }
+    .contact-item:last-child { border: 0; }
+    .contact-item strong { display: block; color: var(--green-dark); }
+    .contact-item a { text-decoration: none; overflow-wrap: anywhere; }
+    .contact-note { color: var(--muted); }
+
+    footer { padding: 25px 0; text-align: center; color: var(--muted); font-size: .88rem; }
+
+    .reveal { opacity: 0; transform: translateY(18px); transition: opacity .65s ease, transform .65s ease; }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
+
+    @media (max-width: 800px) {
+      .hero-grid, .about-grid, .contact-grid { grid-template-columns: 1fr; }
+      .hero-grid { gap: 35px; }
+      .profile-wrap { order: -1; }
+      .profile-frame { width: min(240px, 70vw); }
+      .skills-grid { grid-template-columns: repeat(2, 1fr); }
+      .interests { grid-template-columns: repeat(3, 1fr); }
+    }
+    @media (max-width: 620px) {
+      .container { width: min(100% - 28px, 1100px); }
+      .nav { min-height: 64px; }
+      .menu-toggle { display: block; }
+      .nav-links {
+        display: none; position: absolute; top: 64px; left: 0; right: 0;
+        padding: 18px 22px 22px; background: var(--cream);
+        border-bottom: 1px solid rgba(71,124,112,.12);
+        flex-direction: column; align-items: flex-start; gap: 15px;
+      }
+      .nav-links.open { display: flex; }
+      .hero { padding: 48px 0 58px; }
+      section { padding: 58px 0; }
+      .skills-grid, .qualities-grid, .education-grid { grid-template-columns: 1fr; }
+      .experience-card { grid-template-columns: 1fr; padding: 22px; }
+      .interests { grid-template-columns: repeat(2, 1fr); }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+      *, *::before, *::after { transition-duration: .01ms !important; animation-duration: .01ms !important; }
+      .reveal { opacity: 1; transform: none; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <nav class="nav container" aria-label="Navigation principale">
+      <a class="brand" href="#accueil">ANGÈLE SANCHO</a>
+      <button class="menu-toggle" id="menuToggle" aria-label="Ouvrir le menu" aria-expanded="false">☰</button>
+      <div class="nav-links" id="navLinks">
+        <a href="#profil">Profil</a>
+        <a href="#competences">Compétences</a>
+        <a href="#experiences">Expériences</a>
+        <a href="#formation">Formation</a>
+        <a href="#contact">Contact</a>
+      </div>
+    </nav>
+  </header>
+
+  <main>
+    <section class="hero" id="accueil">
+      <div class="container hero-grid">
+        <div class="reveal">
+          <span class="eyebrow">Portfolio professionnel · ASV</span>
+          <h1>Angèle <span>SANCHO</span></h1>
+          <p><strong>Apprentie Auxiliaire Spécialisée Vétérinaire</strong><br>
+            Passionnée par les animaux et leur bien-être, je développe mes compétences au sein d'une clinique vétérinaire d'urgence. Mes expériences en clinique et en écurie m'ont permis de renforcer mon sens de l'organisation, ma rigueur et mon contact avec les clients.</p>
+          <div class="hero-actions">
+            <a class="btn btn-primary" href="#experiences">Découvrir mon parcours</a>
+            <a class="btn btn-secondary" href="#contact">Me contacter</a>
+          </div>
+        </div>
+        <div class="profile-wrap reveal">
+          <div class="profile-frame">
+            <img src="porfolio-moi.jpg" alt="Photo de profil d'Angèle Sancho">
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="profil">
+      <div class="container">
+        <div class="section-heading reveal">
+          <span class="section-kicker">Qui suis-je ?</span>
+          <h2>Mon profil</h2>
+          <p>Un parcours tourné vers le soin, l'accueil et le bien-être animal.</p>
+        </div>
+        <div class="about-grid">
+          <article class="panel reveal">
+            <p>Actuellement en formation d'Assistante Spécialisée Vétérinaire, je souhaite continuer à approfondir mes connaissances et mon savoir-faire sur le terrain. Mon alternance en clinique d'urgence me permet de découvrir le fonctionnement d'une structure vétérinaire et de participer aux missions adaptées à mon rôle d'apprentie.</p>
+            <p>Je suis une personne sociable, souriante et empathique. J'accorde de l'importance à l'écoute, à la patience et au travail en équipe.</p>
+          </article>
+          <div class="facts reveal">
+            <div class="fact"><strong>Formation actuelle</strong>ASV – GIPSA de Montpellier</div>
+            <div class="fact"><strong>Structure d'alternance</strong>Clinique d'urgence vétérinaire StadiumVet</div>
+            <div class="fact"><strong>Localisation</strong>Villeneuve-lès-Béziers (34)</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="competences">
+      <div class="container">
+        <div class="section-heading reveal">
+          <span class="section-kicker">Mon savoir-faire</span>
+          <h2>Compétences</h2>
+          <p>Des compétences développées au fil de mes expériences professionnelles et de ma formation.</p>
+        </div>
+        <div class="skills-grid">
+          <article class="skill-card reveal"><div class="skill-icon">📦</div><h3>Gestion des stocks</h3><p>Rangement et suivi du matériel et des médicaments.</p></article>
+          <article class="skill-card reveal"><div class="skill-icon">🧼</div><h3>Hygiène et entretien</h3><p>Nettoyage des espaces, des cages, des instruments et des tables de consultation.</p></article>
+          <article class="skill-card reveal"><div class="skill-icon">🐾</div><h3>Soins aux animaux</h3><p>Participation aux soins et au bien-être des animaux dans le cadre des missions confiées.</p></article>
+          <article class="skill-card reveal"><div class="skill-icon">💬</div><h3>Accueil et relationnel</h3><p>Accueil, écoute et contact avec les personnes.</p></article>
+          <article class="skill-card reveal"><div class="skill-icon">📝</div><h3>Assistance et observation</h3><p>Prise de notes et aide à l'organisation lors des consultations et interventions.</p></article>
+          <article class="skill-card reveal"><div class="skill-icon">🤝</div><h3>Travail en équipe</h3><p>Autonomie, rigueur, organisation et adaptation au travail collectif.</p></article>
+        </div>
+      </div>
+    </section>
+
+    <section id="qualites">
+      <div class="container">
+        <div class="section-heading reveal">
+          <span class="section-kicker">Mon savoir-être</span>
+          <h2>Qualités et langues</h2>
+        </div>
+        <div class="qualities-grid">
+          <article class="panel reveal">
+            <h3>Mes qualités</h3>
+            <ul class="quality-list">
+              <li>Sociable et souriante</li>
+              <li>Empathique et patiente</li>
+              <li>Appliquée et volontaire</li>
+              <li>Autonome et rigoureuse</li>
+            </ul>
+          </article>
+          <article class="panel reveal">
+            <h3>Langues</h3>
+            <ul class="quality-list">
+              <li>Français : langue maternelle</li>
+              <li>Anglais : notions de base</li>
+              <li>Espagnol : niveau A2</li>
+            </ul>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section id="experiences">
+      <div class="container">
+        <div class="section-heading reveal">
+          <span class="section-kicker">Mon parcours</span>
+          <h2>Expériences professionnelles</h2>
+          <p>Mes expériences en milieu vétérinaire, thermal et équestre.</p>
+        </div>
+        <div class="experience-list" id="experienceList"></div>
+      </div>
+    </section>
+
+    <section id="formation">
+      <div class="container">
+        <div class="section-heading reveal">
+          <span class="section-kicker">Mon parcours scolaire</span>
+          <h2>Formations</h2>
+        </div>
+        <div class="education-grid">
+          <article class="education-card featured reveal">
+            <div class="education-date">3 novembre 2025 – 2 novembre 2027</div>
+            <h3>Formation d'Assistante Spécialisée Vétérinaire (ASV)</h3>
+            <p><strong>GIPSA de Montpellier</strong></p>
+            <p>Formation en alternance au sein de la clinique d'urgence vétérinaire <strong>StadiumVet</strong>, à Villeneuve-lès-Béziers.</p>
+          </article>
+          <article class="education-card reveal">
+            <div class="education-date">2024</div>
+            <h3>Baccalauréat STAV</h3>
+            <p>Sciences et Technologies de l'Agronomie et du Vivant</p>
+            <p>Lycée Agricole Charles-Marie de La Condamine, Pézenas.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section id="interets">
+      <div class="container">
+        <div class="section-heading reveal">
+          <span class="section-kicker">En dehors du travail</span>
+          <h2>Centres d'intérêt</h2>
+        </div>
+        <div class="interests">
+          <div class="interest-card reveal"><span>🐎</span>Équitation</div>
+          <div class="interest-card reveal"><span>⛵</span>Joutes</div>
+          <div class="interest-card reveal"><span>💃</span>Danse</div>
+          <div class="interest-card reveal"><span>🏃</span>Sport</div>
+          <div class="interest-card reveal"><span>✈️</span>Voyages</div>
+          <div class="interest-card reveal"><span>🍳</span>Cuisine</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="contact-section" id="contact">
+      <div class="container">
+        <div class="section-heading reveal">
+          <span class="section-kicker">Échangeons</span>
+          <h2>Me contacter</h2>
+          <p>Pour toute question ou opportunité professionnelle, vous pouvez me contacter.</p>
+        </div>
+        <div class="contact-grid">
+          <div class="panel reveal">
+            <div class="contact-item"><strong>Téléphone</strong><a href="tel:+33783599175">07 83 59 91 75</a></div>
+            <div class="contact-item"><strong>E-mail</strong><a href="mailto:angelesancho4@gmail.com">angelesancho4@gmail.com</a></div>
+            <div class="contact-item"><strong>Ville</strong>Frontignan (34110)</div>
+          </div>
+          <div class="panel reveal">
+            <h3>Merci pour votre visite !</h3>
+            <p class="contact-note">Je serais ravie de pouvoir échanger avec vous au sujet de mon parcours et de ma formation d'ASV.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="container">© <span id="currentYear"></span> Angèle Sancho · Portfolio ASV</div>
+  </footer>
+
+  <script>
+    // Toutes les expériences sont regroupées dans ce tableau pour faciliter les modifications.
+    const experiences = [
+      {
+        title: "Agent thermal",
+        dates: "Septembre – novembre 2024",
+        place: "Les Thermes, Balaruc-les-Bains",
+        icon: "♨️",
+        description: "Accompagnement des personnes pendant leurs soins thermaux et participation au bon déroulement des séances.",
+        tasks: [
+          "Accompagner les personnes en situation de handicap pendant les soins.",
+          "Accueillir et orienter les curistes.",
+          "Travailler en équipe pour assurer le bon déroulement des soins."
+        ]
+      },
+      {
+        title: "Agent de nettoyage manuel des plages",
+        dates: "Août 2023 et août 2024",
+        place: "Mairie de Frontignan",
+        icon: "🌊",
+        description: "Participation à l'entretien des plages et à la préservation de la propreté du littoral.",
+        tasks: [
+          "Ramasser les déchets sur les plages.",
+          "Travailler en équipe.",
+          "Veiller à la propreté de l'environnement."
+        ]
+      },
+      {
+        title: "Stagiaire assistante vétérinaire",
+        dates: "Juillet 2023",
+        place: "Clinique vétérinaire Dr Joland, Balaruc-le-Vieux",
+        icon: "🐶",
+        description: "Découverte du fonctionnement d'une clinique vétérinaire et participation aux tâches quotidiennes.",
+        tasks: [
+          "Gérer et ranger le matériel et les médicaments.",
+          "Assister les vétérinaires pendant les consultations en prenant des notes.",
+          "Nettoyer les cages et aider à nourrir les animaux."
+        ]
+      },
+      {
+        title: "Stagiaire assistante vétérinaire",
+        dates: "Juin 2023",
+        place: "Clinique vétérinaire de l'Étang, Mèze",
+        icon: "🐱",
+        description: "Observation et aide au déroulement des consultations et des interventions.",
+        tasks: [
+          "Nettoyer les instruments et la table entre les consultations.",
+          "Assister pendant les consultations et les opérations en prenant des notes."
+        ]
+      },
+      {
+        title: "Stagiaire palefrenière",
+        dates: "Février 2023",
+        place: "Écurie CABAL'ARTE, Vic-la-Gardiole",
+        icon: "🐴",
+        description: "Participation aux soins quotidiens des chevaux et à l'entretien de l'écurie.",
+        tasks: [
+          "Nettoyer les boxes.",
+          "Nourrir les chevaux matin et soir.",
+          "Aider pendant les cours d'équitation.",
+          "Pansage des chevaux."
+        ]
+      }
+    ];
+
+    const experienceList = document.getElementById("experienceList");
+    experienceList.innerHTML = experiences.map((experience) => `
+      <article class="experience-card reveal">
+        <div class="experience-icon" aria-hidden="true">${experience.icon}</div>
+        <div>
+          <div class="experience-meta">${experience.dates}</div>
+          <h3>${experience.title}</h3>
+          <p class="experience-context">${experience.place}</p>
+          <p>${experience.description}</p>
+          <ul>${experience.tasks.map(task => `<li>${task}</li>`).join("")}</ul>
+        </div>
+      </article>
+    `).join("");
+
+    const menuToggle = document.getElementById("menuToggle");
+    const navLinks = document.getElementById("navLinks");
+
+    menuToggle.addEventListener("click", () => {
+      const isOpen = navLinks.classList.toggle("open");
+      menuToggle.setAttribute("aria-expanded", String(isOpen));
+      menuToggle.setAttribute("aria-label", isOpen ? "Fermer le menu" : "Ouvrir le menu");
+    });
+
+    navLinks.querySelectorAll("a").forEach(link => {
+      link.addEventListener("click", () => {
+        navLinks.classList.remove("open");
+        menuToggle.setAttribute("aria-expanded", "false");
+        menuToggle.setAttribute("aria-label", "Ouvrir le menu");
+      });
+    });
+
+    document.getElementById("currentYear").textContent = new Date().getFullYear();
+
+    const revealObserver = new IntersectionObserver((entries, observer) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add("visible");
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.12 });
+
+    document.querySelectorAll(".reveal").forEach(element => revealObserver.observe(element));
+  </script>
+</body>
+</html>
+'''
+
+path = Path("/mnt/data/index.html")
+path.write_text(html, encoding="utf-8")
+print(f"Fichier créé : {path} ({path.stat().st_size} octets)")
