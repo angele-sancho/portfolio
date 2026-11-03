@@ -502,5 +502,14 @@ html = r'''<!DOCTYPE html>
 '''
 
 path = Path("/mnt/data/index.html")
+portfolio-angele/
+│
+├── index.html
+├── porfolio-moi.jpg
+│
+└── img/
+    ├── sterilisation.jpg
+    ├── consultation.jpg
+    └── autres-photos.jpg
 path.write_text(html, encoding="utf-8")
 print(f"Fichier créé : {path} ({path.stat().st_size} octets)")
